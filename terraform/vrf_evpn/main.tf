@@ -341,9 +341,9 @@ resource "nsxt_policy_segment" "seg_vrf_cs_1" {
 }
 
 # Create Security Groups
-resource "nsxt_policy_group" "web_servers" {
-  display_name = "Web server"
-  description  = "My Web servers"
+resource "nsxt_policy_group" "red_web_servers" {
+  display_name = "Red Web server"
+  description  = "My Red Web servers"
   criteria {
     condition {
       key         = "Tag"
@@ -351,6 +351,15 @@ resource "nsxt_policy_group" "web_servers" {
       operator    = "CONTAINS"
       value       = "web"
     }
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "red"
+    }
+  }
+   conjunction {
+    operator = "AND"
   }
   tag {
     scope = var.nsx_tag_scope
@@ -358,9 +367,9 @@ resource "nsxt_policy_group" "web_servers" {
   }
 }
 
-resource "nsxt_policy_group" "app_servers" {
-  display_name = "App server"
-  description  = "My App servers"
+resource "nsxt_policy_group" "red_app_servers" {
+  display_name = "Red App server"
+  description  = "My Red App servers"
 
   criteria {
     condition {
@@ -369,13 +378,21 @@ resource "nsxt_policy_group" "app_servers" {
       operator    = "CONTAINS"
       value       = "app"
     }
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "red"
+    }
+  }
+   conjunction {
+    operator = "AND"
   }
   tag {
     scope = var.nsx_tag_scope
     tag   = var.nsx_tag
   }
 }
-
 
 resource "nsxt_policy_group" "red_servers" {
   display_name = "Tenant Red servers"
@@ -432,47 +449,47 @@ resource "nsxt_policy_service" "service_tcp8443" {
 }
 
 # Create Security Policies
-resource "nsxt_policy_security_policy" "allow_blue" {
-  display_name = "Blue tenant"
+resource "nsxt_policy_security_policy" "allow_red" {
+  display_name = "Red tenant DFW"
   description  = "Terraform provisioned Security Policy"
   category     = "Application"
   locked       = false
   stateful     = true
   tcp_strict   = true
-  scope        = [nsxt_policy_group.web_servers.path]
+  scope        = [nsxt_policy_group.red_web_servers.path]
 
   rule {
-    display_name       = "Allow SSH to Blue Servers"
-    destination_groups = [nsxt_policy_group.blue_servers.path]
+    display_name       = "Allow SSH to Red Servers"
+    destination_groups = [nsxt_policy_group.red_servers.path]
     action             = "ALLOW"
     services           = [data.nsxt_policy_service.ssh.path]
     logged             = true
-    scope              = [nsxt_policy_group.blue_servers.path]
+    scope              = [nsxt_policy_group.red_servers.path]
   }
 
   rule {
-    display_name       = "Allow HTTPS to Web Servers"
-    destination_groups = [nsxt_policy_group.web_servers.path]
+    display_name       = "Allow HTTPS to Red Web Servers"
+    destination_groups = [nsxt_policy_group.red_web_servers.path]
     action             = "ALLOW"
     services           = [data.nsxt_policy_service.https.path]
     logged             = true
-    scope              = [nsxt_policy_group.web_servers.path]
+    scope              = [nsxt_policy_group.red_web_servers.path]
   }
 
   rule {
-    display_name       = "Allow TCP 8443 to App Servers"
-    source_groups      = [nsxt_policy_group.web_servers.path]
-    destination_groups = [nsxt_policy_group.app_servers.path]
+    display_name       = "Allow TCP 8443 to Red App Servers"
+    source_groups      = [nsxt_policy_group.red_web_servers.path]
+    destination_groups = [nsxt_policy_group.red_app_servers.path]
     action             = "ALLOW"
     services           = [nsxt_policy_service.service_tcp8443.path]
     logged             = true
-    scope              = [nsxt_policy_group.web_servers.path, nsxt_policy_group.app_servers.path]
+    scope              = [nsxt_policy_group.red_web_servers.path, nsxt_policy_group.red_app_servers.path]
   }
 
   rule {
     display_name = "Any Deny"
     action       = "REJECT"
     logged       = false
-    scope        = [nsxt_policy_group.blue_servers.path]
+    scope        = [nsxt_policy_group.red_servers.path]
   }
 }
