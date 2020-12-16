@@ -1,0 +1,44 @@
+#cloud-config
+chpasswd:
+    list: |
+      ubuntu:VMware123!
+    expire: false
+users:
+  - default
+  - name: ubuntu
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCpOTLpQ0VfxfRixiOg3jnJiMtMgstoBxLrRMUQT2TI0tRHrqJOWnI+o4drRDQbX3+/cRouTQBrQhz2ekvdiJAsF1a1nnK+hjEovohOYTeOU9/0/dGxDDpXDtMlxJc7c9O95LVs8NOvhodMG4B09I3+iTLJ5yQTngt4beB5h11oa/+Mq1L3eHs1PjutrTTHxQ2u8ZQtn2BxbTzhnHNNJyMwtpQfUyFXP3Rk65t+eRmBaKuR/gPn41uKK6mZkIrlkPBaHJzkzA4WSbTVtAPzJceywb8LRnDMdatWwnmaQ8EMGJEqfjE6OmRSqAvgftuEQvHJOuYIrCGGq5GcgXRZquaYHTh0Mo3crkb/k4h/FYz2+SriLmPFjNR/C9UEOuTxEeVOMECBEyKtZ2UWVQZnf3P7kbCo4dR55DOB57R7Xv6FEJdoBrRz5FLqk1NEGqg4/PbEzlrpDYyUFTvfXzxBuSXOHHNDxVZibH9O9BPPgzBgMubH07f9sdusUkp5pwOxC37snUglyzr6d89t33C1l1UTNPbtb8FnMLwTxvsT1bNuYoiEOo9+rnOt4OkreZNEMF6fCG2Vre6udTjxga9mS5dT4iupd5B/b0QKj4RmdEPbkhLfwPua2SJqJXkovoBUInMSwrV9clgCx+WrhZdh4QFgmShDQX2A1URJYH4dVhpSow== mykey
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    shell: /bin/bash
+
+package_upgrade: true
+packages:
+  - open-vm-tools
+
+write_files:
+  - content: |
+      network:
+        version: 2
+        ethernets:
+          ens192:
+            dhcp4: false
+            addresses: [10.0.0.7/24]
+            gateway4: 10.0.0.250
+            nameservers:
+              search: [vsphere.local]
+              addresses: [10.0.0.250]
+    path: /etc/netplan/50-cloud-init.yaml
+runcmd:
+  - systemctl daemon-reload
+  - netplan apply
+  - cloud-init clean --logs && touch /etc/cloud/cloud-init.disabled && rm -rf /etc/netplan/50-cloud-init.yaml
+  - apt purge cloud-init -y
+  - apt autoremove -y
+  - apt clean
+  - sed -i 's/Before=cloud-init-local.service/After=dbus.service/g' /lib/systemd/system/open-vm-tools.service
+  - echo "" | sudo tee /etc/machine-id >/dev/null
+final_message: "The system is prepped, after $UPTIME seconds"
+power_state:
+  timeout: 30
+  mode: poweroff

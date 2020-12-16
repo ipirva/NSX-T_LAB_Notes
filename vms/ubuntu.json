@@ -1,0 +1,42 @@
+{
+  "DiskProvisioning": "thin",
+  "IPAllocationPolicy": "dhcpPolicy",
+  "IPProtocol": "IPv4",
+  "PropertyMapping": [
+    {
+      "Key": "instance-id",
+      "Value": "id-ovf"
+    },
+    {
+      "Key": "hostname",
+      "Value": "vm_template"
+    },
+    {
+      "Key": "seedfrom",
+      "Value": ""
+    },
+    {
+      "Key": "public-keys",
+      "Value": ""
+    },
+    {
+      "Key": "user-data",
+      "Value": "I2Nsb3VkLWNvbmZpZwpjaHBhc3N3ZDoKICAgIGxpc3Q6IHwKICAgICAgdWJ1bnR1OlZNd2FyZTEyMyEKICAgIGV4cGlyZTogZmFsc2UKdXNlcnM6CiAgLSBkZWZhdWx0CiAgLSBuYW1lOiB1YnVudHUKICAgIHNzaC1hdXRob3JpemVkLWtleXM6CiAgICAgIC0gc3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFDQVFDcE9UTHBRMFZmeGZSaXhpT2czam5KaU10TWdzdG9CeExyUk1VUVQyVEkwdFJIcnFKT1duSStvNGRyUkRRYlgzKy9jUm91VFFCclFoejJla3ZkaUpBc0YxYTFubksraGpFb3ZvaE9ZVGVPVTkvMC9kR3hERHBYRHRNbHhKYzdjOU85NUxWczhOT3Zob2RNRzRCMDlJMytpVExKNXlRVG5ndDRiZUI1aDExb2EvK01xMUwzZUhzMVBqdXRyVFRIeFEydThaUXRuMkJ4YlR6aG5ITk5KeU13dHBRZlV5RlhQM1JrNjV0K2VSbUJhS3VSL2dQbjQxdUtLNm1aa0lybGtQQmFISnprekE0V1NiVFZ0QVB6SmNleXdiOExSbkRNZGF0V3dubWFROEVNR0pFcWZqRTZPbVJTcUF2Z2Z0dUVRdkhKT3VZSXJDR0dxNUdjZ1hSWnF1YVlIVGgwTW8zY3JrYi9rNGgvRll6MitTcmlMbVBGak5SL0M5VUVPdVR4RWVWT01FQ0JFeUt0WjJVV1ZRWm5mM1A3a2JDbzRkUjU1RE9CNTdSN1h2NkZFSmRvQnJSejVGTHFrMU5FR3FnNC9QYkV6bHJwRFl5VUZUdmZYenhCdVNYT0hITkR4VlppYkg5TzlCUFBnekJnTXViSDA3ZjlzZHVzVWtwNXB3T3hDMzdzblVnbHl6cjZkODl0MzNDMWwxVVROUGJ0YjhGbk1Md1R4dnNUMWJOdVlvaUVPbzkrcm5PdDRPa3JlWk5FTUY2ZkNHMlZyZTZ1ZFRqeGdhOW1TNWRUNGl1cGQ1Qi9iMFFLajRSbWRFUGJraExmd1B1YTJTSnFKWGtvdm9CVUluTVN3clY5Y2xnQ3grV3JoWmRoNFFGZ21TaERRWDJBMVVSSllINGRWaHBTb3c9PSBteWtleQogICAgc3VkbzogQUxMPShBTEwpIE5PUEFTU1dEOkFMTAogICAgZ3JvdXBzOiBzdWRvCiAgICBzaGVsbDogL2Jpbi9iYXNoCnBhY2thZ2VfdXBncmFkZTogdHJ1ZQpwYWNrYWdlczoKICAtIG9wZW4tdm0tdG9vbHMKd3JpdGVfZmlsZXM6CiAgLSBjb250ZW50OiB8CiAgICAgIG5ldHdvcms6CiAgICAgICAgdmVyc2lvbjogMgogICAgICAgIGV0aGVybmV0czoKICAgICAgICAgIGVuczE5MjoKICAgICAgICAgICAgZGhjcDQ6IHRydWUKICAgIHBhdGg6IC9ldGMvbmV0cGxhbi81MC1jbG91ZC1pbml0LnlhbWwKcnVuY21kOgogIC0gc3lzdGVtY3RsIGRhZW1vbi1yZWxvYWQKICAtIG5ldHBsYW4gYXBwbHkKICAjLSBjbG91ZC1pbml0IGNsZWFuIC0tbG9ncyAmJiB0b3VjaCAvZXRjL2Nsb3VkL2Nsb3VkLWluaXQuZGlzYWJsZWQgJiYgcm0gLXJmIC9ldGMvbmV0cGxhbi81MC1jbG91ZC1pbml0LnlhbWwgCiAgIy0gYXB0IHB1cmdlIGNsb3VkLWluaXQgLXkKICAtIGFwdCBhdXRvcmVtb3ZlIC15CiAgLSBhcHQgY2xlYW4KICAtIHNlZCAtaSAncy9CZWZvcmU9Y2xvdWQtaW5pdC1sb2NhbC5zZXJ2aWNlL0FmdGVyPWRidXMuc2VydmljZS9nJyAvbGliL3N5c3RlbWQvc3lzdGVtL29wZW4tdm0tdG9vbHMuc2VydmljZQogIC0gZWNobyAiIiB8IHN1ZG8gdGVlIC9ldGMvbWFjaGluZS1pZCA+L2Rldi9udWxsCmZpbmFsX21lc3NhZ2U6ICJUaGUgc3lzdGVtIGlzIHByZXBwZWQsIGFmdGVyICRVUFRJTUUgc2Vjb25kcyIKcG93ZXJfc3RhdGU6CiAgdGltZW91dDogMzAKICBtb2RlOiBwb3dlcm9mZgo="
+    },
+    {
+      "Key": "password",
+      "Value": "VMware123!"
+    }
+  ],
+  "NetworkMapping": [
+    {
+      "Name": "VM Network",
+      "Network": "vi-cluster1-vds-Mgmt"
+    }
+  ],
+  "MarkAsTemplate": false,
+  "PowerOn": false,
+  "InjectOvfEnv": false,
+  "WaitForIP": false,
+  "Name": "Ubuntu_641804Template_DHCP"
+}
