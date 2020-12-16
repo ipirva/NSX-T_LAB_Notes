@@ -17,7 +17,7 @@ if [ $? -eq 0 ]; then
   # if test is successful
   if [ $tenant_test -eq 1 ]; then
     echo "Interface $if_tenant MTU configured correctly."
-    ip route add 172.17.0.0/16 dev ens224
+    ip route add 172.17.0.0/16 via 172.17.10.1
     exit 0
   else
     echo "Interface $if_tenant MTU not configured correctly." && exit 1

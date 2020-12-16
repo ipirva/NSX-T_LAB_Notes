@@ -21,3 +21,22 @@ module "tenant_red" {
   compute_pool        = var.compute_pool
   vm_folder           = var.vm_folder
 }
+
+module "tenant_blue" {
+  source = "../tenants/tenant_blue"
+  data_center         = var.data_center
+  cluster             = var.cluster
+  workload_datastore  = var.workload_datastore
+  compute_pool        = var.compute_pool
+  vm_folder           = var.vm_folder
+}
+
+
+module "tenant_cs" {
+  source = "../tenants/tenant_cs"
+  data_center         = var.data_center
+  cluster             = var.cluster
+  workload_datastore  = var.workload_datastore
+  compute_pool        = var.compute_pool
+  vm_folder           = var.vm_folder
+}

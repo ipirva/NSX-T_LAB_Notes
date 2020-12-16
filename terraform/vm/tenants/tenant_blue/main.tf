@@ -67,7 +67,7 @@ resource "vsphere_virtual_machine" "vm20" {
         ipv4_address = "172.17.20.10"
         ipv4_netmask = 24
       }
-      ipv4_gateway = "172.17.20.1"
+      # ipv4_gateway = "172.17.20.1"
       dns_suffix_list = ["tenantblue.com"]
       dns_server_list = ["8.8.8.8"]
       

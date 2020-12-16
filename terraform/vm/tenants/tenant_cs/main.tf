@@ -44,7 +44,7 @@ resource "vsphere_virtual_machine" "vm66" {
     network_id = data.vsphere_network.network_management.id
   }
   network_interface {
-    network_id = data.vsphere_network.network_tenant_cd_1.id
+    network_id = data.vsphere_network.network_tenant_cs_1.id
   }
   cdrom {
     client_device = true
@@ -67,7 +67,7 @@ resource "vsphere_virtual_machine" "vm66" {
         ipv4_address = "172.17.66.66"
         ipv4_netmask = 24
       }
-      ipv4_gateway = "172.17.66.1"
+      # ipv4_gateway = "172.17.66.1"
       dns_suffix_list = ["tenantcs.com"]
       dns_server_list = ["8.8.8.8"]
       
