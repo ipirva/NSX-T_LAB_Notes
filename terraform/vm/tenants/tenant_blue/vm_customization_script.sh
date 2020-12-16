@@ -16,7 +16,9 @@ if [ $? -eq 0 ]; then
   tenant_test=$(ip link show $if_tenant | egrep " mtu 9000 .* state UP " | wc -l)
   # if test is successful
   if [ $tenant_test -eq 1 ]; then
-    echo "Interface $if_tenant MTU configured correctly." && exit 0
+    echo "Interface $if_tenant MTU configured correctly."
+    ip route add 172.17.0.0/16 dev ens224
+    exit 0
   else
     echo "Interface $if_tenant MTU not configured correctly." && exit 1
   fi

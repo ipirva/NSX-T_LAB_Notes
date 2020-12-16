@@ -433,12 +433,12 @@ resource "nsxt_policy_service" "service_tcp8443" {
 
 # Create Security Policies
 resource "nsxt_policy_security_policy" "allow_blue" {
-  display_name = "Allow Blue Application"
+  display_name = "Blue tenant"
   description  = "Terraform provisioned Security Policy"
   category     = "Application"
   locked       = false
   stateful     = true
-  tcp_strict   = false
+  tcp_strict   = true
   scope        = [nsxt_policy_group.web_servers.path]
 
   rule {
