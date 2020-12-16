@@ -349,18 +349,16 @@ resource "nsxt_policy_group" "red_web_servers" {
       key         = "Tag"
       member_type = "VirtualMachine"
       operator    = "CONTAINS"
-      value       = "web"
+      value       = "server|web"
     }
     condition {
       key         = "Tag"
       member_type = "VirtualMachine"
       operator    = "CONTAINS"
-      value       = "red"
+      value       = "tenant|red"
     }
   }
-   conjunction {
-    operator = "AND"
-  }
+
   tag {
     scope = var.nsx_tag_scope
     tag   = var.nsx_tag
@@ -376,18 +374,16 @@ resource "nsxt_policy_group" "red_app_servers" {
       key         = "Tag"
       member_type = "VirtualMachine"
       operator    = "CONTAINS"
-      value       = "app"
+      value       = "server|app"
     }
     condition {
       key         = "Tag"
       member_type = "VirtualMachine"
       operator    = "CONTAINS"
-      value       = "red"
+      value       = "tenant|red"
     }
   }
-   conjunction {
-    operator = "AND"
-  }
+
   tag {
     scope = var.nsx_tag_scope
     tag   = var.nsx_tag
@@ -403,7 +399,7 @@ resource "nsxt_policy_group" "red_servers" {
       key         = "Tag"
       member_type = "VirtualMachine"
       operator    = "CONTAINS"
-      value       = "red"
+      value       = "tenant|red"
     }
   }
   tag {
@@ -421,7 +417,7 @@ resource "nsxt_policy_group" "blue_servers" {
       key         = "Tag"
       member_type = "VirtualMachine"
       operator    = "CONTAINS"
-      value       = "blue"
+      value       = "tenant|blue"
     }
   }
   tag {
