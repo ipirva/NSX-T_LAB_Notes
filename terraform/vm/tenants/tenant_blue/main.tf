@@ -64,7 +64,7 @@ resource "vsphere_virtual_machine" "vm20" {
       }
       network_interface {}
       network_interface {
-        ipv4_address = "172.17.20.10"
+        ipv4_address = "172.17.20.20"
         ipv4_netmask = 24
       }
       # ipv4_gateway = "172.17.20.1"

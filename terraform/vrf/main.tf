@@ -360,141 +360,152 @@ resource "nsxt_policy_segment" "seg_vrf_blue_1" {
     }
 }
 
-
 # Create Security Groups
-resource "nsxt_policy_group" "web_servers" {
-    display_name = "Web server"
-    description  = "My Web servers"
-    criteria {
-        condition {
-            key         = "Tag"
-            member_type = "VirtualMachine"
-            operator    = "CONTAINS"
-            value       = "web"
-        }
+resource "nsxt_policy_group" "red_web_servers" {
+  display_name = "Red Web server"
+  description  = "My Red Web servers"
+  criteria {
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "server|web"
     }
-    tag {
-        scope = var.nsx_tag_scope
-        tag   = var.nsx_tag
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "tenant|red"
     }
+  }
+
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
 }
 
-resource "nsxt_policy_group" "app_servers" {
-    display_name = "App server"
-    description  = "My App servers"
+resource "nsxt_policy_group" "red_app_servers" {
+  display_name = "Red App server"
+  description  = "My Red App servers"
 
-    criteria {
-        condition {
-            key         = "Tag"
-            member_type = "VirtualMachine"
-            operator    = "CONTAINS"
-            value       = "app"
-        }
+  criteria {
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "server|app"
     }
-    tag {
-        scope = var.nsx_tag_scope
-        tag   = var.nsx_tag
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "tenant|red"
     }
+  }
+
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
 }
-
 
 resource "nsxt_policy_group" "red_servers" {
-    display_name = "Tenant Red servers"
-    description  = "Red's servers"
+  display_name = "Tenant Red servers"
+  description  = "Red's servers"
 
-    criteria {
-        condition {
-            key         = "Tag"
-            member_type = "VirtualMachine"
-            operator    = "CONTAINS"
-            value       = "red"
-        }
+  criteria {
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "tenant|red"
     }
-    tag {
-        scope = var.nsx_tag_scope
-        tag   = var.nsx_tag
-    }
+  }
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
 }
 
 resource "nsxt_policy_group" "blue_servers" {
-    display_name = "Tenant Blue servers"
-    description  = "Blue's servers"
+  display_name = "Tenant Blue servers"
+  description  = "Blue's servers"
 
-    criteria {
-        condition {
-            key         = "Tag"
-            member_type = "VirtualMachine"
-            operator    = "CONTAINS"
-            value       = "blue"
-        }
+  criteria {
+    condition {
+      key         = "Tag"
+      member_type = "VirtualMachine"
+      operator    = "CONTAINS"
+      value       = "tenant|blue"
     }
-    tag {
-        scope = var.nsx_tag_scope
-        tag   = var.nsx_tag
-    }
+  }
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
 }
 
 # Create Custom Services
 resource "nsxt_policy_service" "service_tcp8443" {
-    description  = "HTTPS custom service"
-    display_name = "TCP 8443"
+  description  = "HTTPS custom service"
+  display_name = "TCP 8443"
 
-    l4_port_set_entry {
-        display_name      = "TCP8443"
-        description       = "TCP port 8443 entry"
-        protocol          = "TCP"
-        destination_ports = [ "8443" ]
-    }
+  l4_port_set_entry {
+    display_name      = "TCP8443"
+    description       = "TCP port 8443 entry"
+    protocol          = "TCP"
+    destination_ports = ["8443"]
+  }
 
-    tag {
-        scope = var.nsx_tag_scope
-        tag   = var.nsx_tag
-    }
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
 }
 
 # Create Security Policies
-resource "nsxt_policy_security_policy" "allow_blue" {
-    display_name = "Allow Blue Application"
-    description  = "Terraform provisioned Security Policy"
-    category     = "Application"
-    locked       = false
-    stateful     = true
-    tcp_strict   = false
-    scope        = [nsxt_policy_group.web_servers.path]
+resource "nsxt_policy_security_policy" "allow_red" {
+  display_name = "Red tenant DFW"
+  description  = "Terraform provisioned Security Policy"
+  category     = "Application"
+  locked       = false
+  stateful     = true
+  tcp_strict   = true
+  scope        = [nsxt_policy_group.red_web_servers.path]
 
-    rule {
-        display_name        = "Allow SSH to Blue Servers"
-        destination_groups  = [nsxt_policy_group.blue_servers.path]
-        action              = "ALLOW"
-        services            = [data.nsxt_policy_service.ssh.path]
-        logged              = true
-        scope               = [nsxt_policy_group.blue_servers.path]
-    }
+  rule {
+    display_name       = "Allow SSH to Red Servers"
+    destination_groups = [nsxt_policy_group.red_servers.path]
+    action             = "ALLOW"
+    services           = [data.nsxt_policy_service.ssh.path]
+    logged             = true
+    scope              = [nsxt_policy_group.red_servers.path]
+  }
 
-    rule {
-        display_name        = "Allow HTTPS to Web Servers"
-        destination_groups  = [nsxt_policy_group.web_servers.path]
-        action              = "ALLOW"
-        services            = [data.nsxt_policy_service.https.path]
-        logged              = true
-        scope               = [nsxt_policy_group.web_servers.path]
-    }
+  rule {
+    display_name       = "Allow HTTPS to Red Web Servers"
+    destination_groups = [nsxt_policy_group.red_web_servers.path]
+    action             = "ALLOW"
+    services           = [data.nsxt_policy_service.https.path]
+    logged             = true
+    scope              = [nsxt_policy_group.red_web_servers.path]
+  }
 
-    rule {
-        display_name        = "Allow TCP 8443 to App Servers"
-        source_groups       = [nsxt_policy_group.web_servers.path]
-        destination_groups  = [nsxt_policy_group.app_servers.path]
-        action              = "ALLOW"
-        services            = [nsxt_policy_service.service_tcp8443.path]
-        logged              = true
-        scope               = [nsxt_policy_group.web_servers.path,nsxt_policy_group.app_servers.path]
-    }
+  rule {
+    display_name       = "Allow TCP 8443 to Red App Servers"
+    source_groups      = [nsxt_policy_group.red_web_servers.path]
+    destination_groups = [nsxt_policy_group.red_app_servers.path]
+    action             = "ALLOW"
+    services           = [nsxt_policy_service.service_tcp8443.path]
+    logged             = true
+    scope              = [nsxt_policy_group.red_web_servers.path, nsxt_policy_group.red_app_servers.path]
+  }
 
-    rule {
-        display_name        = "Any Deny"
-        action              = "REJECT"
-        logged              = false
-        scope               = [nsxt_policy_group.blue_servers.path]
-    }
+  rule {
+    display_name = "Any Deny"
+    action       = "REJECT"
+    logged       = false
+    scope        = [nsxt_policy_group.red_servers.path]
+  }
 }
-

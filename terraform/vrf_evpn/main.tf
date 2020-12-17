@@ -340,6 +340,7 @@ resource "nsxt_policy_segment" "seg_vrf_cs_1" {
   }
 }
 
+
 # Create Security Groups
 resource "nsxt_policy_group" "red_web_servers" {
   display_name = "Red Web server"

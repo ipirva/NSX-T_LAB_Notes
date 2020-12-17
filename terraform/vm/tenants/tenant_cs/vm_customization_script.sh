@@ -17,7 +17,10 @@ if [ $? -eq 0 ]; then
   # if test is successful
   if [ $tenant_test -eq 1 ]; then
     echo "Interface $if_tenant MTU configured correctly."
-    ip route add 172.17.0.0/16 via 172.17.66.1 && sleep 3
+    # get DGW
+    $part=$(ip addr show dev  ens224 | grep "inet " | grep -oE "brd ([0-9]{1,3}.){3}" | cut -d" " -f2)
+    $dgw=$part"1"
+    ip route add 172.17.0.0/16 via $dgw && sleep 3
     exit 0
   else
     echo "Interface $if_tenant MTU not configured correctly." && exit 1

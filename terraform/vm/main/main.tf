@@ -6,6 +6,7 @@ terraform {
     }
   }
 }
+
 provider "vsphere" {
   user                  = var.vsphere_username
   password              = var.vsphere_password
@@ -21,7 +22,6 @@ module "tenant_red" {
   compute_pool        = var.compute_pool
   vm_folder           = var.vm_folder
 }
-
 module "tenant_blue" {
   source = "../tenants/tenant_blue"
   data_center         = var.data_center
@@ -30,8 +30,6 @@ module "tenant_blue" {
   compute_pool        = var.compute_pool
   vm_folder           = var.vm_folder
 }
-
-
 module "tenant_cs" {
   source = "../tenants/tenant_cs"
   data_center         = var.data_center
