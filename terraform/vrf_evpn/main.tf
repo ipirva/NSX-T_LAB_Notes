@@ -114,6 +114,14 @@ resource "nsxt_policy_tier0_gateway" "t0_vrf_blue" {
     multipath_relax = true
   }
 
+  redistribution_config {
+    enabled = true
+    rule {
+      name  = "Redistribute"
+      types = ["TIER0_STATIC", "TIER0_ROUTER_LINK", "TIER0_CONNECTED", "TIER1_NAT", "TIER1_CONNECTED"]
+    }
+  }
+
   tag {
     scope = "tenant"
     tag   = "blue"
@@ -150,6 +158,13 @@ resource "nsxt_policy_tier0_gateway" "t0_vrf_cs" {
     ecmp            = true
     multipath_relax = true
   }
+
+  redistribution_config {
+    enabled = true
+    rule {
+      name  = "Redistribute"
+      types = ["TIER0_STATIC", "TIER0_ROUTER_LINK", "TIER0_CONNECTED", "TIER1_NAT", "TIER1_CONNECTED"]
+    }
 
   tag {
     scope = "tenant"
@@ -340,6 +355,40 @@ resource "nsxt_policy_segment" "seg_vrf_cs_1" {
   }
 }
 
+# Create NAT on T1s
+resource "nsxt_policy_nat_rule" "Blue_Dst_DNAT1" {
+  display_name         = "Blue_Dst1"
+  action               = "DNAT"
+  source_networks      = ["66.66.66.0/24"]
+  destination_networks = ["2.2.2.2/32"]
+  translated_networks  = ["172.17.20.10"]
+  gateway_path         = nsxt_policy_tier1_gateway.t1_gw_blue.path
+  service              = data.nsxt_policy_service.ssh.path
+  logging              = false
+  firewall_match       = "MATCH_INTERNAL_ADDRESS"
+
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
+}
+
+resource "nsxt_policy_nat_rule" "Cs_Src_SNAT1" {
+  display_name         = "Blue_Dst"
+  action               = "SNAT"
+  source_networks      = ["172.17.66.0/24"]
+  destination_networks = ["2.2.2.0/24"]
+  translated_networks  = ["66.66.66.66"]
+  gateway_path         = nsxt_policy_tier1_gateway.t1_gw_cs.path
+  service              = data.nsxt_policy_service.ssh.path
+  logging              = false
+  firewall_match       = "MATCH_INTERNAL_ADDRESS"
+
+  tag {
+    scope = var.nsx_tag_scope
+    tag   = var.nsx_tag
+  }
+}
 
 # Create Security Groups
 resource "nsxt_policy_group" "red_web_servers" {
